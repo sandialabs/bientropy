@@ -3,5 +3,4 @@
 *.out
 *.csv
 *.npy
-*.png
 *.so
