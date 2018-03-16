@@ -1,0 +1,7 @@
+.*.sw?
+*.pyc
+*.out
+*.csv
+*.npy
+*.png
+*.so
