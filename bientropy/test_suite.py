@@ -212,8 +212,14 @@ def test_error_empty():
 
 
 if __name__ == '__main__':
-    print("""Trying running with:
+    print("""To run the tests before installing:
     $ pytest
-or:
+or if pytest is not in your path variable:
     $ python -m pytest
+    
+If the bientropy package is already installed, run the tests with:
+    $ pytest --pyargs bientropy
+or if pytest is not in your path variable:
+    $ python -m pytest --pyargs bientropy
 """)
+
