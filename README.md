@@ -53,11 +53,16 @@ length of the input in bytes.
 Requirements
 ------------
 
+This package is tested with Python versions 2.7 and 3.6.
+
+Installation:
 * Python http://python.org/
 * GCC http://gcc.gnu.org/
 * libgmp http://gmplib.org/
 * bitstring http://pythonhosted.org/bitstring/
 * NumPy http://numpy.org/
+
+For running tests:
 * pytest http://pytest.org/
 
 
