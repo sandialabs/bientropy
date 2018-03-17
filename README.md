@@ -120,6 +120,13 @@ valgrind --xml=yes --xml-file=valgrind.xml ${python} setup.py test
 ```
 
 
+Authors
+-------
+
+This package, consisting of the C implementations, Python implementations and
+Python bindings were written by Ryan Helinski <rhelins@sandia.gov>.
+
+
 License
 -------
 Copyright 2018 National Technology & Engineering Solutions of Sandia, LLC
