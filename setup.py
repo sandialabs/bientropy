@@ -45,14 +45,13 @@ if int(platform.python_version_tuple()[0]) < 3:
     test_requirements.append('mock')
 
 setup(name='BiEntropy',
-      version='1.0',
+      version='1.0.3',
       description='High-performance implementations of BiEntropy metrics '
                   'proposed by Grenville J. Croll',
       ext_modules=[MODULE],
       url='https://github.com/sandialabs/bientropy',
       author='Ryan Helinski',
       author_email='rhelins@sandia.gov',
-      license='GPLv3',
       keywords='entropy randomness statistics',
       headers=['ext/bientropy.h'],
       packages=['bientropy'],

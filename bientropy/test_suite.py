@@ -216,10 +216,9 @@ if __name__ == '__main__':
     $ pytest
 or if pytest is not in your path variable:
     $ python -m pytest
-    
+
 If the bientropy package is already installed, run the tests with:
     $ pytest --pyargs bientropy
 or if pytest is not in your path variable:
     $ python -m pytest --pyargs bientropy
 """)
-

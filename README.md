@@ -58,18 +58,47 @@ This package is tested with Python versions 2.7 and 3.6.
 Installation:
 * Python http://python.org/
 * GCC http://gcc.gnu.org/
-* libgmp http://gmplib.org/
+* GMP http://gmplib.org/ or MPIR on Windows http://mpir.org/
 * bitstring http://pythonhosted.org/bitstring/
 * NumPy http://numpy.org/
 
 For running tests:
 * pytest http://pytest.org/
+* mock https://pypi.org/project/mock/ if using Python 2
 
 
-Installation
-------------
+Install from pip
+----------------
 
-You will need to install the GMP library if not installing from a wheel.
+This package includes a C extension which has to be compiled for each platform.
+Python wheels include compiled binary code and allow the extension to be
+installed without requiring a compiler.
+
+`pip >= 1.4` with `setuptools >= 0.8` will use a wheel if there is one available
+for the target platform:
+```
+pip install --user BiEntropy
+```
+
+Once installed, the tests can be run with pytest:
+```
+pytest --pyargs bientropy
+```
+or:
+```
+python -m pytest --pyargs bientropy
+```
+
+
+Install from Source
+-------------------
+
+The source code for the `bientropy` package can be cloned or downloaded from:
+* GitHub: https://github.com/sandialabs/bientropy
+* PyPI: https://pypi.org/project/BiEntropy
+
+The [GMP library](http://gmplib.org/) headers need to be installed before
+compiling.
 
 On Debian/Ubuntu:
 ```
@@ -86,18 +115,27 @@ Then, use `setup.py` to compile and install the package:
 python setup.py install
 ```
 
-Optionally, you can run the unit tests with the following command:
+Optionally, the unit tests can be run with the following command:
 ```
 python setup.py test
 ```
 
-You can test your installation with this command:
+
+Included Scripts
+----------------
+
+After installing, a demonstration can be run with this command:
 ```
 python -m bientropy.demo
 ```
+This file (`bientropy/demo.py`) also serves as a good example for using
+the package.
 
-This file (`bientropy/demo.py`) also serves as a good starting point for using
-the code.
+The same benchmark script used to generate the data shown in the table and plot
+above is also included. It can be run with:
+```
+python -m bientropy.benchmark
+```
 
 
 Development
