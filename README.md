@@ -84,8 +84,8 @@ This package includes a C extension which has to be compiled for each platform.
 Python wheels include compiled binary code and allow the extension to be
 installed without requiring a compiler.
 
-`pip >= 1.4` with `setuptools >= 0.8` will use a wheel if there is one available
-for the target platform:
+`pip >= 1.4` with `setuptools >= 0.8` will use a wheel if there is one
+available for the target platform:
 ```
 pip install --user BiEntropy
 ```
