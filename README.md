@@ -25,6 +25,11 @@ module for convenience.
 Performance
 -----------
 
+According to the paper, the "BiEntropy algorithm evaluates the order and
+disorder of a binary string of length n in O(n^2) time using O(n) memory." In
+other words, the run time has quadratic growth and the memory requirement has
+linear growth with respect to the string length.
+
 The metrics are implemented in Python using the 'bitstring' package for
 handling arbitrary length binary strings and in native C using the GNU Multiple
 Precision (GMP) arithmetic library.
@@ -53,23 +58,56 @@ length of the input in bytes.
 Requirements
 ------------
 
-This package is tested with Python versions 2.7 and 3.6.
+This package is tested with Python versions 2.7, 3.4, 3.5 and 3.6.
 
 Installation:
-* Python http://python.org/
-* GCC http://gcc.gnu.org/
-* libgmp http://gmplib.org/
+* Python http://python.org/ (>= 2.7 or >= 3.4)
 * bitstring http://pythonhosted.org/bitstring/
 * NumPy http://numpy.org/
 
+Compiling:
+* GCC http://gcc.gnu.org/ on Linux
+* MSVC 9 if using Python 2.7 on Windows
+ * https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266
+* MSVC 14 if using Python 3.x on Windows
+ * http://landinghub.visualstudio.com/visual-cpp-build-tools
+* GMP http://gmplib.org/ or MPIR http://mpir.org/ on Windows
+
 For running tests:
-* pytest http://pytest.org/
+* mock https://pypi.org/project/mock/ if using Python 2.7
 
 
-Installation
-------------
+Install from pip
+----------------
 
-You will need to install the GMP library if not installing from a wheel.
+This package includes a C extension which has to be compiled for each platform.
+Python wheels include compiled binary code and allow the extension to be
+installed without requiring a compiler.
+
+`pip >= 1.4` with `setuptools >= 0.8` will use a wheel if there is one available
+for the target platform:
+```
+pip install --user BiEntropy
+```
+
+Once installed, the tests should be run with the command:
+```
+python -m bientropy.test_suite
+```
+
+A list of available wheel files is available at:
+https://pypi.org/project/BiEntropy/#files
+
+
+Install from Source
+-------------------
+
+The source code for the `bientropy` package can be cloned or downloaded from:
+* GitHub: https://github.com/sandialabs/bientropy
+* PyPI: https://pypi.org/project/BiEntropy
+
+The [GMP library](http://gmplib.org/) and headers need to be installed before
+compiling.
 
 On Debian/Ubuntu:
 ```
@@ -83,21 +121,55 @@ yum install gmp-devel
 
 Then, use `setup.py` to compile and install the package:
 ```
-python setup.py install
+python setup.py install --user
 ```
 
-Optionally, you can run the unit tests with the following command:
+Once installed, the tests should be run with the command:
 ```
-python setup.py test
+python -m bientropy.test_suite
 ```
 
-You can test your installation with this command:
+
+Compiling on Windows
+--------------------
+
+Compiling GMP on Microsoft Windows is only supported under Cygwin, MinGW or
+DJGPP. However, this package can be compiled with MPIR, a fork of GMP, on
+Windows. The source for MPIR is available at http://mpir.org/
+The `setup.py` script expects the header files, library files and DLL to be
+available under `mpir/dll/x64/Release`.
+
+A compiled distribution of the MPIR libray was also available at:
+http://www.holoborodko.com/pavel/mpfr/#download
+Download the `MPFR-MPIR-x86-x64-MSVC2010.zip` file and extract `mpir` from the
+ZIP file to this directory.
+
+Once MPIR is ready, proceed as usual.
+```
+python setup.py install --user
+```
+
+After installing, the tests should be run with the command:
+```
+python -m bientropy.test_suite
+```
+
+
+Included Scripts
+----------------
+
+After installing, a demonstration can be run with this command:
 ```
 python -m bientropy.demo
 ```
+This file (`bientropy/demo.py`) also serves as a good example for using
+the package.
 
-This file (`bientropy/demo.py`) also serves as a good starting point for using
-the code.
+The same benchmark script used to generate the data shown in the table and plot
+above is also included. It can be run with:
+```
+python -m bientropy.benchmark
+```
 
 
 Development

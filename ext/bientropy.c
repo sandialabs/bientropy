@@ -24,7 +24,16 @@
 
 #include <stdio.h>
 #include <gmp.h>
+#define _USE_MATH_DEFINES // should define M_LOG2E
 #include <math.h>
+
+#if (_MSC_VER == 1500)
+// support for VC9/Visual C++ 2008
+static double log2(double n)
+{
+    return log(n) * M_LOG2E;
+}
+#endif
 
 #include "bientropy.h"
 
@@ -38,9 +47,9 @@
 mpz_bin mpz_bin_d (mpz_bin x)
 {
     mpz_bin r;
-    mpz_init(r.i);
-
     mpz_t a, b;
+
+    mpz_init(r.i);
     mpz_init(a);
     mpz_init(b);
 
@@ -97,17 +106,17 @@ mpz_bin mpz_bin_d_k (mpz_bin x, unsigned k)
  */
 double bien(mpz_bin s)
 {
-    mpf_t t, t_k;
+    mpf_t t, t_k, result;
+    mpz_bin s_k, s_k_new;
+    unsigned ones, k;
+    double p, e, g, retval;
+
     mpf_init (t);
     mpf_init (t_k);
-    mpz_bin s_k, s_k_new;
     mpz_init (s_k.i);
     mpz_set(s_k.i, s.i);
     s_k.len = s.len;
-    unsigned ones;
-    double p, e, g;
 
-    unsigned k;
     for (k = 0; k<s.len - 1; k++)
     {
         ones = mpz_popcount(s_k.i);
@@ -141,14 +150,13 @@ double bien(mpz_bin s)
         mpz_clear(s_k_new.i);
     }
 
-    mpf_t result;
     mpf_init(result);
     mpf_set_ui(result, 1);
     mpf_mul_2exp(result, result, s.len-1);
     mpf_sub_ui(result, result, 1);
     mpf_ui_div(result, 1, result);
     mpf_mul(result, result, t);
-    double retval = mpf_get_d(result);
+    retval = mpf_get_d(result);
     mpf_clear(result);
 
     mpf_clear(t);
@@ -169,19 +177,19 @@ double bien(mpz_bin s)
  */
 double tbien(mpz_bin s)
 {
-    mpf_t t, t_k, l, l_k;
+    mpf_t t, t_k, l, l_k, result;
+    mpz_bin s_k, s_k_new;
+    unsigned ones, k;
+    double p, e, g, retval;
+
     mpf_init (t);
     mpf_init (t_k);
     mpf_init (l);
     mpf_init (l_k);
-    mpz_bin s_k, s_k_new;
     mpz_init (s_k.i);
     mpz_set(s_k.i, s.i);
     s_k.len = s.len;
-    unsigned ones;
-    double p, e, g;
 
-    unsigned k;
     for (k = 0; k<s.len - 1; k++)
     {
         ones = mpz_popcount(s_k.i);
@@ -218,11 +226,10 @@ double tbien(mpz_bin s)
         mpz_clear(s_k_new.i);
     }
 
-    mpf_t result;
     mpf_init(result);
     mpf_ui_div(result, 1, l);
     mpf_mul(result, result, t);
-    double retval = mpf_get_d(result);
+    retval = mpf_get_d(result);
     mpf_clear(result);
 
     mpf_clear(t);

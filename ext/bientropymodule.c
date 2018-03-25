@@ -46,6 +46,7 @@ bientropy_wrapper(PyObject *self, PyObject *args, double (*f)(mpz_bin))
     PyObject *in_obj = NULL;
     mpz_bin in;
     PyObject *retval = NULL;
+    unsigned int slack;
 
     // PyArg_ParseTuple returns a borrowed reference for objects
     if (!PyArg_ParseTuple(args, "O", &in_obj))
@@ -79,7 +80,7 @@ bientropy_wrapper(PyObject *self, PyObject *args, double (*f)(mpz_bin))
             Py_DECREF(bytestr);
             return NULL;
         }
-        unsigned int slack = PyString_Size(bytestr)*8 - PyObject_Size(in_obj);
+        slack = PyString_Size(bytestr)*8 - PyObject_Size(in_obj);
 #ifdef DEBUG
         printf("Length of byte string: %ld\n", PyString_Size(bytestr));
         printf("Length of object (bits): %ld\n", PyObject_Size(in_obj));
