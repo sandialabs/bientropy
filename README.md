@@ -68,9 +68,9 @@ Installation:
 Compiling:
 * GCC http://gcc.gnu.org/ on Linux
 * MSVC 9 if using Python 2.7 on Windows
- * https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266
+  * https://www.microsoft.com/EN-US/DOWNLOAD/confirmation.aspx?id=44266
 * MSVC 14 if using Python 3.x on Windows
- * http://landinghub.visualstudio.com/visual-cpp-build-tools
+  * http://landinghub.visualstudio.com/visual-cpp-build-tools
 * GMP http://gmplib.org/ or MPIR http://mpir.org/ on Windows
 
 For running tests:
@@ -139,9 +139,9 @@ Windows. The source for MPIR is available at http://mpir.org/
 The `setup.py` script expects the header files, library files and DLL to be
 available under `mpir/dll/x64/Release`.
 
-A compiled distribution of the MPIR libray was also available at:
+A compiled distribution of the MPIR library was also available at:
 http://www.holoborodko.com/pavel/mpfr/#download
-Download the `MPFR-MPIR-x86-x64-MSVC2010.zip` file and extract `mpir` from the
+To use it, download the `MPFR-MPIR-x86-x64-MSVC2010.zip` file and extract `mpir` from the
 ZIP file to this directory.
 
 Once MPIR is ready, proceed as usual.
