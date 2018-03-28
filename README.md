@@ -25,9 +25,10 @@ module for convenience.
 Basic Usage
 -----------
 
-The `bien` and `tbien` functions support both binary (i.e., not unicode) strings
-and object types, such as those provided by the  `bitstring` package, that have
-both a `tobytes()` method and a `len()` method that returns the length in bits.
+The `bien` and `tbien` functions support inputs of both binary (i.e., not
+unicode) strings and object types, such as those provided by the  `bitstring`
+package, that have both a `tobytes()` method that returns a binary string and a
+`len()` method that returns the length in bits.
 
 ```
 In [1]: from bientropy import bien, tbien
@@ -40,8 +41,8 @@ Out[3]: (0.9496956846525874, 0.9305948708049089)
 In [4]: bien(Bits('0xfa1afe1')), tbien(Bits('0xfa1afe1'))
 Out[4]: (0.05957853232204588, 0.7189075024152897)
 
-In [6]: bien(b'\xde\xad\xbe\xef'), tbien(b'\xde\xad\xbe\xef')
-Out[6]: (0.060189286721883305, 0.7898265151674035)
+In [5]: bien(b'\xde\xad\xbe\xef'), tbien(b'\xde\xad\xbe\xef')
+Out[5]: (0.060189286721883305, 0.7898265151674035)
 
 ```
 
