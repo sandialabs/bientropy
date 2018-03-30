@@ -189,8 +189,8 @@ After installing, a demonstration can be run with this command:
 ```
 python -m bientropy.demo
 ```
-This file (`bientropy/demo.py`) also serves as a good example for using
-the package.
+This runs [demo.py](/bientropy/demo.py), which also serves as an example for
+using the package.
 
 The same benchmark script used to generate the data shown in the table and plot
 above is also included. It can be run with:
