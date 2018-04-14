@@ -73,7 +73,7 @@ if sys.platform == 'win32':
             shutil.copyfileobj(r.raw, f)
         with zipfile.ZipFile(zip_name, 'r') as z:
             z.extractall('.')
-        mpir_dir = zip_name.replace('.zip', '')+'mpir/dll/x64/Release'
+        mpir_dir = zip_name.replace('.zip', '')+'/mpir/dll/x64/Release'
         # Make sure the DLL gets included in distributions in case a different
         # user does not have the DLL already
         if not os.path.isfile('bientropy/mpir.dll'):
