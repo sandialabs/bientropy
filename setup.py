@@ -27,6 +27,7 @@ On the Windows platform, the MPIR library http://mpir.org/ is used.
 import platform
 import sys
 import os
+from os.path import join
 from setuptools import setup, Extension
 
 requirements = [
@@ -45,24 +46,44 @@ ext_library_dirs = []
 ext_libs = ['gmp']
 package_data = {}
 
+# This is complicated because GMP is not well supported on Windows
 if sys.platform == 'win32':
-    mpir_dir = 'mpir/dll/x64/Release'
-    if not os.path.isdir(mpir_dir):
-        raise Exception('''This package can be compiled with MPIR on Windows.
-The source for MPIR is available at http://mpir.org/
-The header files, library files and DLL are expected under %s
-
-A compiled distribution of MPIR was also available at:
-http://www.holoborodko.com/pavel/mpfr/#download
-Download 'MPFR-MPIR-x86-x64-MSVC2010.zip'.
-Extract 'mpir' from the ZIP file to this directory.
-''' % mpir_dir)
     import shutil
-    if not os.path.isfile('bientropy/mpir.dll'):
-        shutil.copy(os.path.join(mpir_dir, 'mpir.dll'), 'bientropy')
-    ext_include_dirs = [mpir_dir]
-    ext_library_dirs = [mpir_dir]
+    if 'CONDA_PREFIX' in os.environ:
+        CONDA_LIB = join(os.environ['CONDA_PREFIX'], 'Library')
+        if not os.path.isfile(join(CONDA_LIB, 'include', 'gmp.h')):
+            raise Exception(
+                'On Anaconda Python, the MPIR library can be installed using:'
+                '\n\n'
+                'conda install -c conda-forge mpir')
+        # Make sure the DLL gets included in distributions in case a different
+        # user does not have the DLL already
+        if not os.path.isfile('bientropy/mpir.dll'):
+            shutil.copy(join(CONDA_LIB, 'bin', 'mpir.dll'), 'bientropy')
+        # Tell setuptools where to find the header and library files
+        ext_include_dirs = [join(CONDA_LIB, 'include')]
+        ext_library_dirs = [join(CONDA_LIB, 'lib')]
+    else:
+        # Try to download the library
+        import requests, zipfile
+        zip_name = 'mpfr_mpir_x86_x64_msvc2010.zip'
+        mpir_zip_url = 'http://holoborodko.com/pavel/downloads/'+zip_name
+        r = requests.get(mpir_zip_url, stream=True)
+        with open(zip_name, 'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+        with zipfile.ZipFile(zip_name, 'r') as z:
+            z.extractall('.')
+        mpir_dir = zip_name.replace('.zip', '')+'/mpir/dll/x64/Release'
+        # Make sure the DLL gets included in distributions in case a different
+        # user does not have the DLL already
+        if not os.path.isfile('bientropy/mpir.dll'):
+            shutil.copy(os.path.join(mpir_dir, 'mpir.dll'), 'bientropy')
+        # Tell setuptools where to find the header and library files
+        ext_include_dirs = [mpir_dir]
+        ext_library_dirs = [mpir_dir]
+    # Use MPIR instead of GMP
     ext_libs = ['mpir']
+    # Include the DLL in distributions
     package_data['bientropy'] = ['mpir.dll']
 
 MODULE = Extension('bientropy.cbientropy',
