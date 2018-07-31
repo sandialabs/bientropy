@@ -29,6 +29,9 @@ import sys
 import os
 from os.path import join
 from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext
+from distutils.errors import CCompilerError, DistutilsExecError, \
+    DistutilsPlatformError
 
 requirements = [
     'bitstring>=3.1.5',
@@ -38,8 +41,8 @@ requirements = [
 test_requirements = []
 
 if int(platform.python_version_tuple()[0]) < 3:
-    requirements.append('mock')
-    test_requirements.append('mock')
+    requirements.extend(['unittest2', 'mock'])
+    test_requirements.extend(['unittest2', 'mock'])
 
 ext_include_dirs = []
 ext_library_dirs = []
@@ -86,6 +89,7 @@ if sys.platform == 'win32':
     # Include the DLL in distributions
     package_data['bientropy'] = ['mpir.dll']
 
+
 MODULE = Extension('bientropy.cbientropy',
                    sources=['ext/bientropy.c',
                             'ext/bientropymodule.c'],
@@ -94,19 +98,71 @@ MODULE = Extension('bientropy.cbientropy',
                    libraries=ext_libs,
                   )
 
-setup(name='BiEntropy',
-      version='1.0.4',
-      description='High-performance implementations of BiEntropy metrics '
-                  'proposed by Grenville J. Croll',
-      ext_modules=[MODULE],
-      url='https://github.com/sandialabs/bientropy',
-      author='Ryan Helinski',
-      author_email='rhelins@sandia.gov',
-      keywords='entropy randomness statistics',
-      headers=['ext/bientropy.h'],
-      packages=['bientropy'],
-      package_data = package_data,
-      install_requires=requirements,
-      tests_require=test_requirements,
-      test_suite='bientropy.test_suite'
-     )
+
+if sys.platform == 'win32' and sys.version_info > (2, 6):
+   # 2.6's distutils.msvc9compiler can raise an IOError when failing to
+   # find the compiler
+   # It can also raise ValueError http://bugs.python.org/issue7511
+   ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError,
+                 IOError, ValueError)
+else:
+    ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError)
+
+
+class BuildFailed(Exception):
+    pass
+
+
+class ve_build_ext(build_ext):
+    # This class allows C extension building to fail.
+
+    def run(self):
+        try:
+            build_ext.run(self)
+        except (DistutilsPlatformError, BuildFailed):
+            raise BuildFailed()
+
+    def build_extension(self, ext):
+        try:
+            build_ext.build_extension(self, ext)
+        except ext_errors:
+            raise BuildFailed()
+
+
+def run_setup(with_ext):
+    if with_ext:
+        kw = dict(
+                ext_modules=[MODULE],
+                cmdclass=dict(build_ext=ve_build_ext),
+                )
+    else:
+        kw = dict()
+
+    setup(name='BiEntropy',
+          version='1.1.0-rc1',
+          description='High-performance implementations of BiEntropy metrics '
+                      'proposed by Grenville J. Croll',
+          url='https://github.com/sandialabs/bientropy',
+          author='Ryan Helinski',
+          author_email='rhelins@sandia.gov',
+          keywords='entropy randomness statistics',
+          headers=['ext/bientropy.h'],
+          packages=['bientropy'],
+          package_data = package_data,
+          install_requires=requirements,
+          tests_require=test_requirements,
+          test_suite='bientropy.tests',
+          classifiers=(
+              'Development Status :: 5 - Production/Stable',
+              'Topic :: Scientific/Engineering :: Mathematics',
+              'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+              'Topic :: Security :: Cryptography'),
+          **kw
+         )
+
+try:
+    run_setup(True)
+except BuildFailed:
+    print('WARNING: Compiling without C extension')
+    run_setup(False)
+    print('WARNING: Compiled without C extension')

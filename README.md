@@ -168,8 +168,8 @@ available under `mpir/dll/x64/Release`.
 
 A compiled distribution of the MPIR library was also available at:
 http://www.holoborodko.com/pavel/mpfr/#download
-To use it, download the `MPFR-MPIR-x86-x64-MSVC2010.zip` file and extract `mpir` from the
-ZIP file to this directory.
+To use it, download the `MPFR-MPIR-x86-x64-MSVC2010.zip` file and extract
+`mpir` from the ZIP file to this directory.
 
 Once MPIR is ready, proceed as usual.
 ```
@@ -180,6 +180,9 @@ After installing, the tests should be run with the command:
 ```
 python -m bientropy.test_suite
 ```
+
+See https://github.com/cython/cython/wiki/CythonExtensionsOnWindows for more
+information.
 
 
 Included Scripts

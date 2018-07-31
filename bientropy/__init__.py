@@ -18,10 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ---
 
-This Python package provides high-performance implementations of the functions
-and examples presented in "BiEntropy - The Approximate Entropy of a Finite
-Binary String" by Grenville J.  Croll, presented at ANPA 34 in 2013.
-https://arxiv.org/abs/1305.0954
+This Python package, written by Ryan Helinski, provides high-performance
+implementations of the functions and examples presented in "BiEntropy -
+The Approximate Entropy of a Finite Binary String" by Grenville J.  Croll,
+presented at ANPA 34 in 2013. https://arxiv.org/abs/1305.0954
 
 According to the paper, BiEntropy is "a simple algorithm which computes the
 approximate entropy of a finite binary string of arbitrary length" using "a
@@ -40,4 +40,10 @@ module for convenience.
 '''
 
 from . import pybientropy
-from .cbientropy import bien, tbien
+try:
+    from .cbientropy import bien, tbien
+except ImportError:
+    import warnings
+    warnings.warn('Unable to import C extension. Using slower Python '
+        'implementations instead', Warning)
+    from .pybientropy import bien, tbien

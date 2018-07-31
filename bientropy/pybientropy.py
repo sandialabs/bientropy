@@ -27,6 +27,7 @@ __version__ = '1.0'
 
 from math import log
 from decimal import Decimal
+from bitstring import Bits
 
 DEBUG = False
 
@@ -84,6 +85,11 @@ def p_k(bits, k):
     """
     return float(bin_deriv_k(bits, k).count(1)) / (bits.len - k)
 
+def __get_bitstring(inp):
+    if type(inp) is bytes:
+        inp = Bits(bytes=inp)
+    return inp
+
 def bien(bits):
     """
     BiEntropy, or BiEn for short, is a weighted average of the Shannon binary
@@ -104,6 +110,9 @@ def bien(bits):
     float
         the BiEntropy of the input
     """
+    return __bien(__get_bitstring(bits))
+
+def __bien(bits):
     t = Decimal(0)
     s_k = bits
     for k in range(bits.len - 1):
@@ -142,6 +151,9 @@ def tbien(bits):
     float
         the TBiEntropy of the input
     """
+    return __tbien(__get_bitstring(bits))
+
+def __tbien(bits):
     l = 0
     t = 0
     s_k = bits
