@@ -139,7 +139,7 @@ def run_setup(with_ext):
         kw = dict()
 
     setup(name='BiEntropy',
-          version='1.1.0-rc2',
+          version='1.1.0-rc3',
           description='High-performance implementations of BiEntropy metrics '
                       'proposed by Grenville J. Croll',
           url='https://github.com/sandialabs/bientropy',
@@ -147,7 +147,7 @@ def run_setup(with_ext):
           author_email='rhelins@sandia.gov',
           keywords='entropy randomness statistics',
           headers=['ext/bientropy.h'],
-          packages=['bientropy'],
+          packages=['bientropy', 'bientropy.tests'],
           package_data = package_data,
           install_requires=requirements,
           tests_require=test_requirements,
