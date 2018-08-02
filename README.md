@@ -124,7 +124,7 @@ pip install --user BiEntropy
 
 Once installed, the tests should be run with the command:
 ```
-python -m bientropy.test_suite
+python -m bientropy.tests
 ```
 
 A list of available wheel files is available at:
@@ -158,7 +158,7 @@ python setup.py install --user
 
 Once installed, the tests should be run with the command:
 ```
-python -m bientropy.test_suite
+python -m bientropy.tests
 ```
 
 
@@ -183,7 +183,7 @@ python setup.py install --user
 
 After installing, the tests should be run with the command:
 ```
-python -m bientropy.test_suite
+python -m bientropy.tests
 ```
 
 See https://github.com/cython/cython/wiki/CythonExtensionsOnWindows for more
