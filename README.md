@@ -103,6 +103,11 @@ Compiling:
 For running tests:
 * mock https://pypi.org/project/mock/ if using Python 2.7
 
+To check which version you may already have installed, run the command:
+```
+python -c "import pkg_resources; print('BiEntropy version: '+pkg_resources.get_distribution('bientropy').version)"
+```
+
 
 Install from pip
 ----------------
