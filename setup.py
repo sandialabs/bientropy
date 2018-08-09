@@ -152,11 +152,11 @@ def run_setup(with_ext):
           install_requires=requirements,
           tests_require=test_requirements,
           test_suite='bientropy.tests',
-          classifiers=(
+          classifiers=[
               'Development Status :: 5 - Production/Stable',
               'Topic :: Scientific/Engineering :: Mathematics',
               'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-              'Topic :: Security :: Cryptography'),
+              'Topic :: Security :: Cryptography'],
           **kw
          )
 
