@@ -62,8 +62,10 @@ def round_fun(x):
 
 def run_large_byte_strings(s_byte_len=128, tolerance=0.001):
     ti = os.urandom(s_byte_len)
-    pybien = pybientropy.bien(Bits(bytes=ti))
-    cbien = cbientropy.bien(ti)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        pybien = pybientropy.bien(Bits(bytes=ti))
+        cbien = cbientropy.bien(ti)
     assert abs(pybien - cbien) < tolerance
     pytbien = pybientropy.tbien(Bits(bytes=ti))
     ctbien = cbientropy.tbien(ti)
@@ -167,8 +169,10 @@ class BiEntropyTests(TestCase):
         for s_len in range(1, max_s_len):
             with self.subTest(s_len=s_len):
                 ti = os.urandom(s_len)
-                self.assertEqual(cbientropy.bien(Bits(bytes=ti)),
-                                 cbientropy.bien(ti))
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore')
+                    self.assertEqual(cbientropy.bien(Bits(bytes=ti)),
+                                     cbientropy.bien(ti))
                 self.assertEqual(cbientropy.tbien(Bits(bytes=ti)),
                                  cbientropy.tbien(ti))
 
@@ -181,8 +185,10 @@ class BiEntropyTests(TestCase):
         for s_len in range(1, max_s_len):
             with self.subTest(s_len=s_len):
                 ti = os.urandom(s_len)
-                self.assertEqual(pybientropy.bien(Bits(bytes=ti)),
-                                 pybientropy.bien(ti))
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore')
+                    self.assertEqual(pybientropy.bien(Bits(bytes=ti)),
+                                     pybientropy.bien(ti))
                 self.assertEqual(pybientropy.tbien(Bits(bytes=ti)),
                                  pybientropy.tbien(ti))
 
@@ -199,8 +205,10 @@ class BiEntropyTests(TestCase):
                 rand_s = Bits(bytes=os.urandom(int(prime/8+1)))[:prime]
                 input_set = input_set.union([rand_s])
                 self.assertEqual(len(rand_s), prime)
-                self.assertAlmostEqual(cbientropy.bien(rand_s),
-                                       pybientropy.bien(rand_s))
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore')
+                    self.assertAlmostEqual(cbientropy.bien(rand_s),
+                                           pybientropy.bien(rand_s))
                 self.assertAlmostEqual(cbientropy.tbien(rand_s),
                                        pybientropy.tbien(rand_s))
 
