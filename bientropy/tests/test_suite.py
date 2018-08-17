@@ -341,29 +341,37 @@ class BiEntropyTests(TestCase):
                         fun(empty)
 
 
-    @skipIf(NO_CEXT, NO_CEXT)
     def test_error_tbien_short(self):
         '''
         Check that C TBiEn raises an exception if the input object has
         too short of a length
         '''
         for short in [Bits(uint=0, length=1), Bits(uint=1, length=1)]:
-            with self.assertRaises(ValueError):
-                cbientropy.tbien(short)
+            funs = [pybientropy.tbien]
+            if not NO_CEXT:
+                funs.append(cbientropy.tbien)
+            for fun in funs:
+                with self.subTest(short=short, fun=fun):
+                    with self.assertRaises(ValueError):
+                        cbientropy.tbien(short)
 
 
-    @skipIf(NO_CEXT, NO_CEXT)
     def test_warn_bien_long(self):
         '''
         Check that C BiEn issues a warning if the input object has
         too long of a length
         '''
         for value in [Bits(uint=42, length=33), Bits(uint=57, length=64)]:
-            with warnings.catch_warnings(record=True) as w:
-                warnings.simplefilter('always')
-                cbientropy.bien(value)
-                self.assertEqual(len(w), 1)
-                self.assertTrue(issubclass(w[-1].category, Warning))
+            funs = [pybientropy.bien]
+            if not NO_CEXT:
+                funs.append(cbientropy.bien)
+            for fun in funs:
+                with self.subTest(value=value, fun=fun):
+                    with warnings.catch_warnings(record=True) as w:
+                        warnings.simplefilter('always')
+                        cbientropy.bien(value)
+                        self.assertEqual(len(w), 1)
+                        self.assertTrue(issubclass(w[-1].category, Warning))
 
 
 if __name__ == '__main__':
