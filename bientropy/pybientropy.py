@@ -28,6 +28,7 @@ __version__ = '1.0'
 from math import log
 from decimal import Decimal
 from bitstring import Bits
+import warnings
 
 DEBUG = False
 
@@ -114,6 +115,11 @@ def bien(bits):
 
 def __bien(bits):
     t = Decimal(0)
+    if bits.len > 32:
+        warnings.warn('The BiEn algorithm is not suitable for binary strings '\
+                      'longer than 32 bits.',
+                      Warning,
+                      stacklevel=2)
     s_k = bits
     for k in range(bits.len - 1):
         ones = s_k.count(1)
@@ -156,6 +162,9 @@ def tbien(bits):
 def __tbien(bits):
     l = 0
     t = 0
+    if bits.len == 1:
+        raise ValueError(
+            'The input string is too short for the TBiEn algorithm.')
     s_k = bits
     for k in range(bits.len - 1):
         ones = s_k.count(1)
