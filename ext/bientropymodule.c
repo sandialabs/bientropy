@@ -132,6 +132,22 @@ bientropy_wrapper(PyObject *self, PyObject *args, double (*f)(mpz_bin))
         return NULL;
     }
 
+    if (f == tbien && in.len == 1) {
+        PyErr_SetString(
+            PyExc_ValueError,
+            "The input string is too short for the TBiEn algorithm.");
+        mpz_clear(in.i);
+        return NULL;
+    }
+
+    if (f == bien && in.len > 32) {
+        PyErr_WarnEx(
+            PyExc_Warning,
+            "The BiEn algorithm is not suitable for binary strings "
+            "longer than 32 bits.",
+            1);
+    }
+
     retval = PyFloat_FromDouble(f(in));
 
     mpz_clear(in.i);

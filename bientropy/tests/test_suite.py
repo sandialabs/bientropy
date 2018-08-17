@@ -29,6 +29,7 @@ import os
 import sys
 from multiprocessing import Pool, cpu_count
 from itertools import repeat
+import warnings
 
 try:
     from unittest.mock import patch, call, MagicMock
@@ -330,6 +331,31 @@ class BiEntropyTests(TestCase):
                 with self.subTest(empty=empty, fun=fun):
                     with self.assertRaises(ValueError):
                         fun(empty)
+
+
+    @skipIf(NO_CEXT, NO_CEXT)
+    def test_error_tbien_short(self):
+        '''
+        Check that C TBiEn raises an exception if the input object has
+        too short of a length
+        '''
+        for short in [Bits(uint=0, length=1), Bits(uint=1, length=1)]:
+            with self.assertRaises(ValueError):
+                cbientropy.tbien(short)
+
+
+    @skipIf(NO_CEXT, NO_CEXT)
+    def test_warn_bien_long(self):
+        '''
+        Check that C BiEn issues a warning if the input object has
+        too long of a length
+        '''
+        for value in [Bits(uint=42, length=33), Bits(uint=57, length=64)]:
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter('always')
+                cbientropy.bien(value)
+                self.assertEqual(len(w), 1)
+                self.assertTrue(issubclass(w[-1].category, Warning))
 
 
 if __name__ == '__main__':
