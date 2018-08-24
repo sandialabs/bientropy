@@ -353,7 +353,7 @@ class BiEntropyTests(TestCase):
             for fun in funs:
                 with self.subTest(short=short, fun=fun):
                     with self.assertRaises(ValueError):
-                        cbientropy.tbien(short)
+                        fun(short)
 
 
     def test_warn_bien_long(self):
@@ -369,7 +369,7 @@ class BiEntropyTests(TestCase):
                 with self.subTest(value=value, fun=fun):
                     with warnings.catch_warnings(record=True) as w:
                         warnings.simplefilter('always')
-                        cbientropy.bien(value)
+                        fun(value)
                         self.assertEqual(len(w), 1)
                         self.assertTrue(issubclass(w[-1].category, Warning))
 
