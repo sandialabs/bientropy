@@ -364,17 +364,19 @@ class BiEntropyTests(TestCase):
         Check that C BiEn issues a warning if the input object has
         too long of a length
         '''
-        for value in [Bits(uint=42, length=33), Bits(uint=57, length=64)]:
+        for inp, outp in [(Bits(uint=42, length=33), 0.450868398),
+                          (Bits(uint=57, length=64), 0.236565114)]:
             funs = [pybientropy.bien]
             if not NO_CEXT:
                 funs.append(cbientropy.bien)
             for fun in funs:
-                with self.subTest(value=value, fun=fun):
+                with self.subTest(inp=inp, fun=fun):
                     with warnings.catch_warnings(record=True) as w:
                         warnings.simplefilter('always')
-                        fun(value)
+                        retval = fun(inp)
                         self.assertEqual(len(w), 1)
                         self.assertTrue(issubclass(w[-1].category, Warning))
+                        self.assertAlmostEqual(retval, outp)
 
 
 if __name__ == '__main__':
