@@ -356,6 +356,9 @@ class BiEntropyTests(TestCase):
                         fun(short)
 
 
+    @skipIf(sys.version_info.major<3 or sys.version_info.minor<4,
+            'Bug with Python warning filters. See '
+            'https://bugs.python.org/msg75117')
     def test_warn_bien_long(self):
         '''
         Check that C BiEn issues a warning if the input object has
