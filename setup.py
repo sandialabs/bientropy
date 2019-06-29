@@ -149,7 +149,7 @@ def run_setup(with_ext):
         kw = dict()
 
     setup(name='BiEntropy',
-          version='1.1.2',
+          version='1.1.3-rc1',
           description='High-performance implementations of BiEntropy metrics '
                       'proposed by Grenville J. Croll',
           url='https://github.com/sandialabs/bientropy',
