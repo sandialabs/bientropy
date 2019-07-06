@@ -31,14 +31,15 @@ from multiprocessing import Pool, cpu_count
 from itertools import repeat
 import warnings
 
-try:
+if sys.version_info.major > 2:
     from unittest.mock import patch, call, MagicMock
     from unittest import TestCase, main, skipIf
-    PY3 = True
-except ImportError:
+else:
     from mock import patch, call, MagicMock
     from unittest2 import TestCase, main, skipIf
-    PY3 = False
+    # Workaround for Python 2.7 bug
+    # https://stackoverflow.com/q/56821539/3098007
+    warnings.simplefilter('always')
 
 from bitstring import Bits
 try:
@@ -63,7 +64,8 @@ def round_fun(x):
 def run_large_byte_strings(s_byte_len=128, tolerance=0.001):
     ti = os.urandom(s_byte_len)
     with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
+        if sys.version_info.major > 2:
+            warnings.simplefilter('ignore')
         pybien = pybientropy.bien(Bits(bytes=ti))
         cbien = cbientropy.bien(ti)
     assert abs(pybien - cbien) < tolerance
@@ -170,7 +172,8 @@ class BiEntropyTests(TestCase):
             with self.subTest(s_len=s_len):
                 ti = os.urandom(s_len)
                 with warnings.catch_warnings():
-                    warnings.simplefilter('ignore')
+                    if sys.version_info.major > 2:
+                        warnings.simplefilter('ignore')
                     self.assertEqual(cbientropy.bien(Bits(bytes=ti)),
                                      cbientropy.bien(ti))
                 self.assertEqual(cbientropy.tbien(Bits(bytes=ti)),
@@ -186,7 +189,8 @@ class BiEntropyTests(TestCase):
             with self.subTest(s_len=s_len):
                 ti = os.urandom(s_len)
                 with warnings.catch_warnings():
-                    warnings.simplefilter('ignore')
+                    if sys.version_info.major > 2:
+                        warnings.simplefilter('ignore')
                     self.assertEqual(pybientropy.bien(Bits(bytes=ti)),
                                      pybientropy.bien(ti))
                 self.assertEqual(pybientropy.tbien(Bits(bytes=ti)),
@@ -206,7 +210,8 @@ class BiEntropyTests(TestCase):
                 input_set = input_set.union([rand_s])
                 self.assertEqual(len(rand_s), prime)
                 with warnings.catch_warnings():
-                    warnings.simplefilter('ignore')
+                    if sys.version_info.major > 2:
+                        warnings.simplefilter('ignore')
                     self.assertAlmostEqual(cbientropy.bien(rand_s),
                                            pybientropy.bien(rand_s))
                 self.assertAlmostEqual(cbientropy.tbien(rand_s),
@@ -222,7 +227,7 @@ class BiEntropyTests(TestCase):
         Check that the Python and C implementations for BiEn and TBiEn match
         for longer bit strings.
         '''
-        if not PY3 or sys.platform == 'win32':
+        if sys.version_info.major < 3 or sys.platform == 'win32':
             map_fun = map
         else:
             pool = Pool(cpu_count())
@@ -241,7 +246,8 @@ class BiEntropyTests(TestCase):
     def test_pytbien_debug(self):
         'Check that Python TBiEn has the correct progression of state'
         with patch('builtins.print' \
-                   if PY3 else '__builtin__.print') as mock_print:
+                   if sys.version_info.major > 2 \
+                   else '__builtin__.print') as mock_print:
             pybientropy.tbien(Bits('0b1011'))
         mock_print.assert_has_calls([
             call('      1011 3 4 0.75 0.25 0.31 0.50 0.81 0 1.00 0.81'),
@@ -256,7 +262,8 @@ class BiEntropyTests(TestCase):
     def test_pybien_debug(self):
         'Check that Python BiEn has the correct progression of state'
         with patch('builtins.print' \
-                   if PY3 else '__builtin__.print') as mock_print:
+                   if sys.version_info.major > 2\
+                   else '__builtin__.print') as mock_print:
             pybientropy.bien(Bits('0b1011'))
         mock_print.assert_has_calls([
             call('      1011 3 4 0.75 0.25 0.31 0.50 0.81 0 1 0.81'),
