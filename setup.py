@@ -71,16 +71,26 @@ if sys.platform == 'win32':
         import requests, zipfile
         zip_name = 'mpfr_mpir_x86_x64_msvc2010.zip'
         mpir_zip_url = 'http://holoborodko.com/pavel/downloads/'+zip_name
-        r = requests.get(mpir_zip_url, stream=True)
-        with open(zip_name, 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
-        with zipfile.ZipFile(zip_name, 'r') as z:
-            z.extractall('.')
-        mpir_dir = zip_name.replace('.zip', '')+'/mpir/dll/x64/Release'
+        if not os.path.isfile(zip_name):
+            print('Downloading '+mpir_zip_url)
+            r = requests.get(mpir_zip_url, stream=True)
+            with open(zip_name, 'wb') as f:
+                shutil.copyfileobj(r.raw, f)
+        else:
+            print('File '+zip_name+' already downloaded')
+        dir_name = zip_name.replace('.zip', '')
+        if not os.path.isdir(dir_name):
+            with zipfile.ZipFile(zip_name, 'r') as z:
+                z.extractall('.')
+        else:
+            print('Directory '+dir_name+' already extracted')
+        pyarch = 'x64' if sys.maxsize > 2**32 else 'Win32'
+        pybuild = 'Debug' if hasattr(sys, 'gettotalrefcount') else 'Release'
+        mpir_dir = dir_name+'\\mpir\\dll\\'+pyarch+'\\'+pybuild
+        print('Using MPIR from '+mpir_dir)
         # Make sure the DLL gets included in distributions in case a different
         # user does not have the DLL already
-        if not os.path.isfile('bientropy/mpir.dll'):
-            shutil.copy(os.path.join(mpir_dir, 'mpir.dll'), 'bientropy')
+        shutil.copy(os.path.join(mpir_dir, 'mpir.dll'), 'bientropy')
         # Tell setuptools where to find the header and library files
         ext_include_dirs = [mpir_dir]
         ext_library_dirs = [mpir_dir]
@@ -139,7 +149,7 @@ def run_setup(with_ext):
         kw = dict()
 
     setup(name='BiEntropy',
-          version='1.1.4',
+          version='1.1.5',
           description='High-performance implementations of BiEntropy metrics '
                       'proposed by Grenville J. Croll',
           url='https://github.com/sandialabs/bientropy',

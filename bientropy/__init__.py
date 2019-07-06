@@ -42,7 +42,8 @@ module for convenience.
 from . import pybientropy
 try:
     from .cbientropy import bien, tbien
-except ImportError:
+except ImportError as e:
+    print(e)
     import warnings
     warnings.warn('Unable to import C extension. Using slower Python '
         'implementations instead', Warning)
