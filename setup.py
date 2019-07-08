@@ -86,18 +86,19 @@ if sys.platform == 'win32':
             print('Directory '+dir_name+' already extracted')
         pyarch = 'x64' if sys.maxsize > 2**32 else 'Win32'
         pybuild = 'Debug' if hasattr(sys, 'gettotalrefcount') else 'Release'
-        mpir_dir = dir_name+'\\mpir\\dll\\'+pyarch+'\\'+pybuild
+        mpir_dir = dir_name+'\\mpir\\dll\\'+pyarch+'\\'+'Release'
         print('Using MPIR from '+mpir_dir)
         # Make sure the DLL gets included in distributions in case a different
         # user does not have the DLL already
         shutil.copy(os.path.join(mpir_dir, 'mpir.dll'), 'bientropy')
+        shutil.copy(os.path.join(mpir_dir, 'mpir.pdb'), 'bientropy')
         # Tell setuptools where to find the header and library files
         ext_include_dirs = [mpir_dir]
         ext_library_dirs = [mpir_dir]
     # Use MPIR instead of GMP
     ext_libs = ['mpir']
     # Include the DLL in distributions
-    package_data['bientropy'] = ['mpir.dll']
+    package_data['bientropy'] = ['mpir.dll', 'mpir.pdb']
 
 
 MODULE = Extension('bientropy.cbientropy',
